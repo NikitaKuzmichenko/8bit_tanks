@@ -16,13 +16,14 @@ import javafx.scene.Scene;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 
 public class Main extends Application {
 
-    final int size = 700, step = 5;
-    double angle = 0;
-    double x = 9 * 35, y = 2 * 35;
+    ArrayList<AI> ai = new ArrayList<>();
+    final int size = 700;
+    double x = 16 * 35, y = 0 * 35;
     Enemies enemies = new Enemies();
     Bullets bullets = new Bullets();
     Board terrain = new Board();
@@ -42,25 +43,25 @@ public class Main extends Application {
         land.setX(0);
         land.setY(0);
         player = new Tank(x, y);
-        double x1=4*35,y1=3*35;
-        enemies.addEnemy(new Tank(x1, y1));
-        enemies.addEnemy(new Tank(x1, y1-35));
+        enemies.addEnemy(new Tank(3*35, 2*35));
+
         Group root = new Group();
         root.getChildren().add(land);
         root.getChildren().add(player.getImg());
         Scene scene = new Scene(root, size, size);
-        primaryStage.setTitle("Hello World!");
+        primaryStage.setTitle("8BIT-TANKS!");
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
 
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent e) {
                 KeyCode key = e.getCode();
-                if (key.equals(KeyCode.UP)) { player.moveUp(terrain,enemies); }
-                if (key.equals(KeyCode.DOWN)) { player.moveDown(terrain,enemies); }
-                if (key.equals(KeyCode.LEFT)) { player.moveLeft(terrain,enemies);}
-                if (key.equals(KeyCode.RIGHT)) { player.moveRight(terrain,enemies);}
+                if (key.equals(KeyCode.UP)) { player.moveUp(terrain,enemies.getEnemies()); }
+                if (key.equals(KeyCode.DOWN)) { player.moveDown(terrain,enemies.getEnemies()); }
+                if (key.equals(KeyCode.LEFT)) { player.moveLeft(terrain,enemies.getEnemies());}
+                if (key.equals(KeyCode.RIGHT)) { player.moveRight(terrain,enemies.getEnemies());}
                 if (key.equals(KeyCode.SPACE)) { if(player.canShoot()) player.shoot(bullets); }
             }
         });
@@ -77,6 +78,9 @@ public class Main extends Application {
 
         enemies.GroupAddAll(root);
 
+        for(int i=0;i<enemies.getEnemies().size();i++){
+            ai.add(new AI(enemies.getEnemies().get(i)));
+        }
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
@@ -99,9 +103,15 @@ public class Main extends Application {
                 enemies.GroupDeleteAll(root);
                 enemies.update();
                 if(!enemies.getEnemies().isEmpty()) {
-                    enemies.GroupAddAll(root);
-                    enemies.shoot(bullets);
+                    for(int i=0;i<ai.size();i++){
+                        if(ai.get(i).canMov()){
+                            ai.get(i).AIMoves(enemies,terrain,player);
+                        }
+                        ai.get(i).AIShoot(terrain,player,bullets);
+                    }
                 }
+                enemies.GroupAddAll(root);
+
             }
         };
         timer.start();

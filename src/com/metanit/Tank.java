@@ -5,13 +5,14 @@ import javafx.scene.image.ImageView;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Tank {
 
     private Date currentTime = null;
     private long timeInMs =0;
-    private long delay = 300;
+    private final long delay = 600;
     private double x,y;
     private final double tank_size =35;
     private ImageView img;
@@ -25,6 +26,24 @@ public class Tank {
         Image  image = null;
         try {
             image = new Image(new FileInputStream("C:\\Users\\nikit\\OneDrive\\Рабочий стол\\g\\tank.jpg"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        img = new ImageView(image);
+
+        img.setX(X);
+        img.setY(Y);
+
+        img.setFitWidth(tank_size);
+        img.setFitHeight(tank_size);
+        img.setPreserveRatio(true);
+    }
+    public Tank(double X,double Y,String paths)  {
+        this.x=X;
+        this.y=Y;
+        Image  image = null;
+        try {
+            image = new Image(new FileInputStream(paths));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -60,72 +79,78 @@ public class Tank {
     public double getX() { return x; }
     public double getY() { return y; }
 
+    public void setAngle(double angle){
+        this.angle=angle;
+        img.setRotate(angle);
+    }
     public void setX(double x){
         this.x=x;
         img.setX(x);
     }
     public void setY(double Y){
-        this.y=y;
-        img.setY(y);
+        this.y=Y;
+        img.setY(Y);
     }
-
+    public int getStep(){return step;}
     public boolean takeDmg(){
         XP=XP-1;
         if(XP==0)return true;
         return false;
     }
 
-    boolean tankCheck(double urPos,double enPos){
+    public double getTank_size() { return tank_size; }
+
+    private boolean tankCheck(double urPos, double enPos){
         boolean s1 =urPos >= enPos && urPos <= enPos + tank_size-1 ;
         boolean s2 =urPos + tank_size-1 >= enPos && urPos + tank_size-1 <= enPos + tank_size-1 ;
         return s1 || s2;
 
     }
-    boolean tankCollisionUp(Enemies enemies){
+    private boolean tankCollisionUp(ArrayList<Tank> enemies){
 
-        if(enemies.getEnemies().isEmpty())return true;
+        if(enemies.isEmpty())return true;
 
-        for(int i=0;i<enemies.getEnemies().size();i++){
-            Tank enemy = enemies.getEnemies().get(i);
+        for(int i=0;i<enemies.size();i++){
+            Tank enemy = enemies.get(i);
             if(enemy.getY()+tank_size!=y) continue;
             if(tankCheck(x,enemy.getX()))return false;
         }
         return true;
     }
-    boolean tankCollisionDown(Enemies enemies){
-        if(enemies.getEnemies().isEmpty())return true;
-        for(int i=0;i<enemies.getEnemies().size();i++){
-            Tank enemy = enemies.getEnemies().get(i);
+    private boolean tankCollisionDown(ArrayList<Tank> enemies){
+        if(enemies.isEmpty())return true;
+        for(int i=0;i<enemies.size();i++){
+            Tank enemy = enemies.get(i);
             if(enemy.getY()-tank_size!=y) continue;
             if(tankCheck(x,enemy.getX()))return false;
         }
         return true;
     }
-    boolean tankCollisionLeft(Enemies enemies){
-        if(enemies.getEnemies().isEmpty())return true;
-        for(int i=0;i<enemies.getEnemies().size();i++){
-            Tank enemy = enemies.getEnemies().get(i);
+    private boolean tankCollisionLeft(ArrayList<Tank> enemies){
+        if(enemies.isEmpty())return true;
+        for(int i=0;i<enemies.size();i++){
+            Tank enemy = enemies.get(i);
             if(enemy.getX()+tank_size!=x) continue;
             if(tankCheck(y,enemy.getY()))return false;
         }
         return true;
     }
-    boolean tankCollisionRight(Enemies enemies){
-        if(enemies.getEnemies().isEmpty())return true;
-        for(int i=0;i<enemies.getEnemies().size();i++){
-            Tank enemy = enemies.getEnemies().get(i);
+    private boolean tankCollisionRight(ArrayList<Tank> enemies){
+        if(enemies.isEmpty())return true;
+        for(int i=0;i<enemies.size();i++){
+            Tank enemy = enemies.get(i);
             if(enemy.getX()-tank_size!=x) continue;
             if(tankCheck(y,enemy.getY()))return false;
         }
         return true;
     }
 
-    boolean boardCheck(double urPos, double blockPos) {
+    private boolean boardCheck(double urPos, double blockPos) {
         boolean s1 =urPos >= (blockPos-1) * tank_size && urPos <= (blockPos) * tank_size;
         boolean s2 =urPos >= (blockPos) * tank_size && urPos <= (blockPos+1) * tank_size;
         return s1 || s2;
     }
-    boolean checkBoardUp(Board board){
+    private boolean checkBoardUp(Board board){
         int sel_size= board.getSel_size();
         int board_size= board.getBoard_size();
         int X= (int) (x/sel_size);
@@ -136,6 +161,7 @@ public class Tank {
         if(y%sel_size!=0)return true;
 
         int index = ((Y-1)*board_size+X);
+        if(index<0)return false;
         if(board.getBoard()[index]!=0)// центарльный болк
             if(boardCheck(x,X))return false;
 
@@ -150,7 +176,7 @@ public class Tank {
 
         return  true;
     }
-    boolean checkBoardDown(Board board){
+    private boolean checkBoardDown(Board board){
         int sel_size= board.getSel_size();
         int board_size= board.getBoard_size();
         int X= (int) (x/sel_size);
@@ -160,6 +186,7 @@ public class Tank {
         if(Y==board_size-1)return true;
 
         int index =((Y+1)*board_size+X);
+        if(index<0)return false;
         if(board.getBoard()[index]!=0)// центарльный болк
             if(boardCheck(x,X))return false;
 
@@ -174,7 +201,7 @@ public class Tank {
 
         return  true;
     }
-    boolean checkBoardLeft(Board board){
+    private boolean checkBoardLeft(Board board){
         int sel_size= board.getSel_size();
         int board_size= board.getBoard_size();
         int X= (int) (x/sel_size);
@@ -183,7 +210,7 @@ public class Tank {
         if(X==0)return true;
 
         if(x%sel_size!=0)return true;
-
+        if(y<0)return false;
         if(board.getBoard()[((Y)*board_size+X-1)]!=0)// центарльный болк
             if(boardCheck(y,Y))return false;
 
@@ -198,7 +225,7 @@ public class Tank {
 
         return  true;
     }
-    boolean checkBoardRight(Board board){
+    private boolean checkBoardRight(Board board){
         int sel_size= board.getSel_size();
         int board_size= board.getBoard_size();
         int X= (int) (x/sel_size);
@@ -207,7 +234,7 @@ public class Tank {
         if(X==board_size-1)return true;
 
         if(x%sel_size!=0)return true;
-
+        if(y<0)return false;
         if(board.getBoard()[((Y)*board_size+X+1)]!=0)// центарльный болк
             if(boardCheck(y,Y))return false;
 
@@ -223,41 +250,45 @@ public class Tank {
         return  true;
     }
 
-    boolean checkUp(Board board,Enemies enemies){
-        return checkBoardUp(board) && tankCollisionUp(enemies);
-    }
-    boolean checkDown(Board board,Enemies enemies){
-        return checkBoardDown(board) && tankCollisionDown(enemies);
-    }
-    boolean checkLeft(Board board,Enemies enemies){
-        return checkBoardLeft(board) && tankCollisionLeft(enemies);
-    }
-    boolean checkRight(Board board,Enemies enemies){
-        return checkBoardRight(board) && tankCollisionRight(enemies);
-    }
+    boolean checkUp(Board board,ArrayList<Tank> enemies){
+        return checkBoardUp(board) && tankCollisionUp(enemies); }
+    boolean checkDown(Board board,ArrayList<Tank> enemies){
+        return checkBoardDown(board) && tankCollisionDown(enemies); }
+    boolean checkLeft(Board board,ArrayList<Tank> enemies){
+        return checkBoardLeft(board) && tankCollisionLeft(enemies); }
+    boolean checkRight(Board board,ArrayList<Tank> enemies){
+        return checkBoardRight(board) && tankCollisionRight(enemies); }
 
-    public void moveUp(Board terrain,Enemies enemies){
+    public void moveUp(Board terrain,ArrayList<Tank> enemies){
         angle = 0;
-        if(checkUp(terrain,enemies)) y -= step;
-        img.setY(y);
+        if(checkUp(terrain,enemies)) {
+            y -= step;
+            img.setY(y);
+        }
         img.setRotate(angle);
     }
-    public void moveDown(Board terrain,Enemies enemies){
+    public void moveDown(Board terrain,ArrayList<Tank> enemies){
         angle = 180;
-        if(checkDown(terrain,enemies)) y += step;
-        img.setY(y);
+        if(checkDown(terrain,enemies)) {
+            y += step;
+            img.setY(y);
+        }
         img.setRotate(angle);
     }
-    public void moveLeft(Board terrain,Enemies enemies){
+    public void moveLeft(Board terrain,ArrayList<Tank> enemies){
         angle = 270;
-        if(checkLeft(terrain,enemies)) x -= step;
-        img.setX(x);
+        if(checkLeft(terrain,enemies)) {
+            x -= step;
+            img.setX(x);
+        }
         img.setRotate(angle);
     }
-    public void moveRight(Board terrain,Enemies enemies){
+    public void moveRight(Board terrain,ArrayList<Tank> enemies){
         angle = 90;
-        if(checkRight(terrain,enemies)) x += step;
-        img.setX(x);
+        if(checkRight(terrain,enemies)) {
+            x += step;
+            img.setX(x);
+        }
         img.setRotate(angle);
     }
 

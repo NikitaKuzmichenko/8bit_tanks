@@ -18,36 +18,35 @@ public class Bullets {
 
     public Bullets() {}
 
-
     public void addBullet(double x, double y, double angle) {
         Image image = null;
         try {
-            image = new Image(new FileInputStream("C:\\Users\\nikit\\OneDrive\\Рабочий стол\\g\\bullet.jpg"));
+            image = new Image(new FileInputStream("C:\\Users\\nikit\\OneDrive\\Рабочий стол\\g\\bullet2.jpg"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         img = new ImageView(image);
 
         if (angle == 90) {
-            x += tank_size+1;
+            x += tank_size+5;
             y += (tank_size - bullet_size) / 2;
         }
         if (angle == 270) {
-            x -= bullet_size+1;
+            x -= bullet_size+5;
             y += (tank_size - bullet_size) / 2;
         }
         if (angle == 0) {
-            y -= bullet_size+1;
+            y -= bullet_size+5;
             x += (tank_size - bullet_size) / 2;
         }
         if (angle == 180) {
-            y += tank_size+1;
+            y += tank_size+5;
             x += (tank_size - bullet_size) / 2;
         }
 
         img.setX(x);
         img.setY(y);
-        img.setRotate(angle - 90);
+        img.setRotate(angle);
         img.setFitWidth(bullet_size);
         img.setFitHeight(bullet_size);
         img.setPreserveRatio(true);
@@ -58,19 +57,19 @@ public class Bullets {
         if (!bullets.isEmpty())
             for (int i = 0; i < bullets.size(); i++) {
                 switch ((int) bullets.get(i).getRotate()) {
-                    case 90: {//низ
+                    case 180: {//низ
                         bullets.get(i).setY(bullets.get(i).getY() + speed);
                         break;
                     }
-                    case 0: {//право
+                    case 90: {//право
                         bullets.get(i).setX(bullets.get(i).getX() + speed);
                         break;
                     }
-                    case 180: {//лево
+                    case 270: {//лево
                         bullets.get(i).setX(bullets.get(i).getX() - speed);
                         break;
                     }
-                    case -90: {// верх
+                    case 0: {// верх
                         bullets.get(i).setY(bullets.get(i).getY() - speed);
                         break;
                     }
@@ -91,6 +90,7 @@ public class Bullets {
 
             double bullet_x = bullets.get(i).getX();
             double bullet_y = bullets.get(i).getY();
+
             int  x=(int)bullet_x/sel_size;
             int  y=(int)bullet_y/sel_size;
 
@@ -113,49 +113,101 @@ public class Bullets {
                 return ;
             }
 
+
             switch ((int) bullets.get(i).getRotate()) {
-                case 90: {//низ
-                    if(y!=Terrain.getBoard_size()-1)
-                   if(Terrain.getBoard()[(y+1)*Terrain.getBoard_size()+x]!=0) {
-                       if(bullet_y+bullet_size>=(y+1)*sel_size) {
-                           Terrain.interaction(x,y+1);
-                           bullets.remove(i);
-                           return;
-                       }
-                    }
-                    break;
-                }
-                case 0: {//право
-                    if(Terrain.getBoard()[(y)*Terrain.getBoard_size()+x+1]!=0) {
-                        if(bullet_x+bullet_size>=(x+1)*sel_size) {
-                            Terrain.interaction(x+1,y);
-                            bullets.remove(i);
-                            return;
+                case 180: {//низ
+                    if(x!=Terrain.getBoard_size()-1)
+                        if(Terrain.getBoard()[y*Terrain.getBoard_size()+x+1]!=0) {
+                            if(bullet_x+bullet_size>(x+1)* sel_size) {
+                                Terrain.interaction(x + 1, y);
+                                bullets.remove(i);
+                                return;
+                            }
                         }
+
+                    if(y!=Terrain.getBoard_size()-1) {
+                        if (Terrain.getBoard()[(y + 1) * Terrain.getBoard_size() + x] != 0) {
+                            if (bullet_y + bullet_size >= (y + 1) * sel_size) {
+                                Terrain.interaction(x, y + 1);
+                                bullets.remove(i);
+                                return;
+                            }
+                        }
+                        if (x != Terrain.getBoard_size() - 1)
+                            if (Terrain.getBoard()[(y + 1) * Terrain.getBoard_size() + x + 1] != 0) {
+                                if (bullet_y + bullet_size >= (y + 1) * sel_size) {
+                                    if(bullet_x+bullet_size>(x+1)* sel_size) {
+                                        Terrain.interaction(x + 1, y + 1);
+                                        bullets.remove(i);
+                                        return;
+                                    }
+                                }
+                            }
                     }
                     break;
                 }
-                case 180: {//лево
+                case 90: {//право
+                    if(y!=Terrain.getBoard_size()-1)
+                        if (Terrain.getBoard()[(y+1) * Terrain.getBoard_size() + x ] != 0) {
+                            if (bullet_y + bullet_size > (y+1) * sel_size) {
+                                Terrain.interaction(x , y+1);
+                                bullets.remove(i);
+                                return;
+                            }
+                        }
+
+                    if(x!=Terrain.getBoard_size()-1) {
+                        if (Terrain.getBoard()[(y) * Terrain.getBoard_size() + x + 1] != 0) {
+                            if (bullet_x + bullet_size >= (x + 1) * sel_size) {
+                                Terrain.interaction(x + 1, y);
+                                bullets.remove(i);
+                                return;
+                            }
+                        }
+                        if (y!=Terrain.getBoard_size()-1 && x!=Terrain.getBoard_size()-1)
+                            if (Terrain.getBoard()[(y + 1) * Terrain.getBoard_size() + x +1] != 0) {
+                                if (bullet_x + bullet_size >= (x + 1) * sel_size) {
+                                    if(bullet_y+bullet_size>(y+1)* sel_size) {
+                                        Terrain.interaction(x + 1, y + 1);
+                                        bullets.remove(i);
+                                        return;
+                                    }
+                                }
+                            }
+                    }
+                    break;
+                }
+                case 270: {//лево
                     if(Terrain.getBoard()[(y)*Terrain.getBoard_size()+x]!=0) {
-                        System.out.println(bullet_x);
-                        System.out.println((x)*sel_size);
                         if(bullet_x+bullet_size>=(x)*sel_size) {
                             Terrain.interaction(x,y);
                             bullets.remove(i);
                             return;
                         }
                     }
+                    if(y!=Terrain.getBoard_size()-1) {
+                        if (Terrain.getBoard()[(y + 1) * Terrain.getBoard_size() + x] != 0) {
+                            if (bullet_x + bullet_size >= (x) * sel_size) {
+                                if (bullet_y + bullet_size > (y + 1) * sel_size) {
+                                    Terrain.interaction(x, y + 1);
+                                    bullets.remove(i);
+                                    return;
+                                }
+                            }
+                        }
+                    }
                     break;
                 }
-                case -90: {// верх
-                    /*if(Terrain.getBoard()[(y-1)*Terrain.getBoard_size()+x]!=0) {
-                        System.out.println(bullet_y);
-                        System.out.println((y-1)*sel_size);
-                        if(bullet_y==(y-1)*sel_size) {
-                            bullets.remove(i);
-                            return;
+                case 0: {// верх
+                    if(x!=Terrain.getBoard_size()-1) {
+                        if (Terrain.getBoard()[(y) * Terrain.getBoard_size() + x + 1] != 0) {
+                            if (bullet_x + bullet_size > (x + 1) * sel_size) {
+                                Terrain.interaction(x + 1, y);
+                                bullets.remove(i);
+                                return;
+                            }
                         }
-                    }*/
+                    }
                     break;
                 }
 
@@ -163,9 +215,9 @@ public class Bullets {
         }
     }
 
-    public boolean collision(double target_x,double target_y,double target_size,double x,double y,double size){
-        boolean statement_1 = (x>=target_x && x<=target_x+target_size) || (x+size>=target_x && x+size<=target_x+target_size);
-        boolean statement_2 = (y>=target_y && y<=target_y+target_size) || (y+size>=target_y && y+size<=target_y+target_size);
+    private boolean collision(double target_x,double target_y,double target_size,double x,double y,double size){
+        boolean statement_1 = (x>target_x && x<target_x+target_size) || (x+size>target_x && x+size<target_x+target_size);
+        boolean statement_2 = (y>target_y && y<target_y+target_size) || (y+size>target_y && y+size<target_y+target_size);
 
         if(statement_1 && statement_2) return true;
         return false;
@@ -195,7 +247,7 @@ public class Bullets {
                 if(!enemies.getEnemies().isEmpty()) {
                     for (int j = 0; j < enemies.getEnemies().size(); j++) {
                         Tank temp_tank = enemies.getEnemies().get(j);
-                        if (collision(temp_tank.getX(), temp_tank.getY(), tank_size, temp.getX(), temp.getY(),  bullet_size)) {
+                        if (collision(temp_tank.getX(), temp_tank.getY(), tank_size, temp.getX(), temp.getY(), bullet_size)) {
                             if(enemies.getEnemies().get(j).takeDmg()) enemies.deleteEnemy(temp_tank);
                             bullets.remove(i);
                             break;
@@ -204,6 +256,7 @@ public class Bullets {
                 }
             }
     }
+
     public boolean PlayerCheck(Tank player){
         if(!bullets.isEmpty())
             for (int i = 0; i < bullets.size(); i++) {

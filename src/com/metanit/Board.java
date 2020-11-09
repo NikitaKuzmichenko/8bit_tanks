@@ -2,6 +2,7 @@ package com.metanit;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.util.Pair;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,23 +14,23 @@ public class Board {
     //0-отсутсвие препядствия , 1 - покалеченное припядствие, 2 - целое препядствие
     //3 - союзная база , 4 - вражеская база
     //карта 20х20, каждый элемент - верхний левый угол ячейки в (sel_size)х(sel_size)
-    private final int [] original_board =  {0,2,2,0,0,0,0,0,2,4,4,2,0,0,0,0,0,2,2,0,
+    private final int [] original_board =  {0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,
                                             0,2,2,0,0,0,0,0,2,2,2,2,0,0,0,0,0,2,2,0,
                                             0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,
-                                            0,2,2,2,0,2,2,2,2,2,2,2,2,2,2,0,2,2,2,0,
-                                            0,2,2,0,0,0,2,0,0,0,0,0,0,2,0,0,0,2,2,0,
-                                            0,2,2,0,0,0,2,0,0,0,0,0,0,2,0,0,0,2,2,0,
+                                            0,2,2,0,0,0,2,2,2,2,2,2,2,2,0,0,0,2,2,0,
+                                            0,2,2,0,2,0,0,0,0,0,0,0,0,0,0,2,0,2,2,0,
+                                            0,2,2,0,2,0,0,0,0,0,0,0,0,0,0,2,0,2,2,0,
                                             0,2,2,0,0,0,2,2,2,2,2,2,2,2,0,0,0,2,2,0,
                                             0,2,2,0,0,0,0,0,0,2,2,0,0,0,0,0,0,2,2,0,
-                                            0,2,2,0,0,0,0,0,0,2,2,0,0,0,0,0,0,2,2,0,
-                                            0,0,0,0,0,0,2,2,2,0,0,2,2,2,0,0,0,0,0,0,
-                                            0,0,0,0,0,0,2,2,2,0,0,2,2,2,0,0,0,0,0,0,
-                                            0,2,2,0,0,0,0,0,0,2,2,0,0,0,0,0,0,2,2,0,
+                                            0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,
+                                            0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,
+                                            0,0,0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,
+                                            0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,
                                             0,2,2,0,0,0,0,0,0,2,2,0,0,0,0,0,0,2,2,0,
                                             0,2,2,0,0,0,2,2,2,2,2,2,2,2,0,0,0,2,2,0,
-                                            0,2,2,0,0,0,2,0,0,0,0,0,0,2,0,0,0,2,2,0,
-                                            0,2,2,0,0,0,2,0,0,0,0,0,0,2,0,0,0,2,2,0,
-                                            0,2,2,2,0,2,2,2,2,2,2,2,2,2,2,0,2,2,2,0,
+                                            0,2,2,0,2,0,0,0,0,0,0,0,0,0,0,2,0,2,2,0,
+                                            0,2,2,0,2,0,0,0,0,0,0,0,0,0,0,2,0,2,2,0,
+                                            0,2,2,0,0,0,2,2,2,2,2,2,2,2,0,0,0,2,2,0,
                                             0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,
                                             0,2,2,0,0,0,0,0,2,2,2,2,0,0,0,0,0,2,2,0,
                                             0,2,2,0,0,0,0,0,2,3,3,2,0,0,0,0,0,2,2,0
@@ -39,10 +40,10 @@ public class Board {
     HashMap<Integer, ImageView> images = new HashMap();
 
     public HashMap<Integer, ImageView> getImages() { return images; }
-    Image wall = null;
-    Image destroyedWall = null;
-    Image playerBase =null;
-    Image enemyBase=null;
+    Image wall;
+    Image destroyedWall;
+    Image playerBase;
+    Image enemyBase;
     public Board()  {
           wall = null;
         try {
@@ -70,29 +71,8 @@ public class Board {
         }
     }
 
-    int getX(int index){ return (index % board_size)*sel_size; }
-    int getY(int index){ return (index / board_size)*sel_size; }
-
-    int checkLaneX(int x,int len){
-            int num=0;
-            for(int i=0;i<len;i++){
-                if(board[i+board_size*x] > num)
-                num = board[i+board_size*x];
-            }
-            if(num==1 || num==2) return 1;//есть стена
-            if(num==3) return 2;//есть вражеская база
-            return 0;// инчего нет
-     }
-    int checkLaneY(int y,int len){
-        int num=0;
-        for(int i=0;i<len;i++){
-            if(board[i*board_size+y] > num)
-                num = board[i*board_size+y];
-        }
-        if(num==1 || num==2) return 1;//есть стена
-        if(num==3) return 2;//есть вражеская база
-        return 0;// инчего нет
-    }
+    double getX(int index){ return (index % board_size)*sel_size; }
+    double getY(int index){ return (index / board_size)*sel_size; }
 
     void refresh(){
         board = original_board.clone();
@@ -118,14 +98,6 @@ public class Board {
              }
              if(board[i]==3){
                  ImageView img = new ImageView(playerBase);
-                 img.setX(getX(i));
-                 img.setY(getY(i));
-                 img.setFitHeight(sel_size);
-                 img.setFitWidth(sel_size);
-                 images.put(i,img);
-             }
-             if(board[i]==4){
-                 ImageView img = new ImageView(enemyBase);
                  img.setX(getX(i));
                  img.setY(getY(i));
                  img.setFitHeight(sel_size);
@@ -166,6 +138,16 @@ public class Board {
         return sel_size;
     }
 
+    public Pair<Double,Double> getBase(){
+        Pair<Double,Double> answer;
+        for(int i=0;i<board.length;i++){
+            if(board[i]==3){
+                answer=new Pair<Double,Double>(getX(i),getY(i));
+                return answer;
+            }
+        }
+        return null;
+    }
 }
 
 
