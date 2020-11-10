@@ -245,5 +245,10 @@ public class AI {
             return;
         }
     }
+
+    public boolean getAI(Tank tank){
+        if(this.tank.equals(tank))return true;
+        else return false;
+    }
 }
 

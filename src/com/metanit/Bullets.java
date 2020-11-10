@@ -216,8 +216,8 @@ public class Bullets {
     }
 
     private boolean collision(double target_x,double target_y,double target_size,double x,double y,double size){
-        boolean statement_1 = (x>target_x && x<target_x+target_size) || (x+size>target_x && x+size<target_x+target_size);
-        boolean statement_2 = (y>target_y && y<target_y+target_size) || (y+size>target_y && y+size<target_y+target_size);
+        boolean statement_1 = (x>=target_x && x<=target_x+target_size) || (x+size>=target_x && x+size<=target_x+target_size);
+        boolean statement_2 = (y>=target_y && y<=target_y+target_size) || (y+size>=target_y && y+size<=target_y+target_size);
 
         if(statement_1 && statement_2) return true;
         return false;

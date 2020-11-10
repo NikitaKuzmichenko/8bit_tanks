@@ -23,18 +23,24 @@ public class Enemies {
         deleted.add(enemy);
     }
 
-    public void update(){
+    public ArrayList<Tank> update(){
         for(int i=0;i<deleted.size();i++) {
             deleted.get(i).setX(-35);
             deleted.get(i).setY(-35);
         }
         enemies.removeAll(deleted);
+        return deleted;
     }
 
     public void GroupAddAll(Group root){
         for(int i=0;i<enemies.size();i++){
             root.getChildren().add(enemies.get(i).getImg());
         }
+    }
+
+    public void removeAll(Group root){
+        enemies.clear();
+        deleted.clear();
     }
     public void GroupDeleteAll(Group root){
         for(int i=0;i<enemies.size();i++){

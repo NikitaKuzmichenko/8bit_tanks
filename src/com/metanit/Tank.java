@@ -17,7 +17,7 @@ public class Tank {
     private final double tank_size =35;
     private ImageView img;
     private double angle=0;
-    private int XP=3;
+    private int HP=3;
     private int  step =5;
 
     public Tank(double X,double Y)  {
@@ -79,6 +79,9 @@ public class Tank {
     public double getX() { return x; }
     public double getY() { return y; }
 
+    public int getHP() { return HP; }
+    public void setHP(int HP) { this.HP = HP; }
+
     public void setAngle(double angle){
         this.angle=angle;
         img.setRotate(angle);
@@ -93,8 +96,8 @@ public class Tank {
     }
     public int getStep(){return step;}
     public boolean takeDmg(){
-        XP=XP-1;
-        if(XP==0)return true;
+        HP=HP-1;
+        if(HP==0)return true;
         return false;
     }
 

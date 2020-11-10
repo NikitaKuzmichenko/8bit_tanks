@@ -12,7 +12,7 @@ public class Board {
 
    private final int sel_size =35,board_size=20;
     //0-отсутсвие препядствия , 1 - покалеченное припядствие, 2 - целое препядствие
-    //3 - союзная база , 4 - вражеская база
+    //3 - союзная база
     //карта 20х20, каждый элемент - верхний левый угол ячейки в (sel_size)х(sel_size)
     private final int [] original_board =  {0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,
                                             0,2,2,0,0,0,0,0,2,2,2,2,0,0,0,0,0,2,2,0,
@@ -40,10 +40,9 @@ public class Board {
     HashMap<Integer, ImageView> images = new HashMap();
 
     public HashMap<Integer, ImageView> getImages() { return images; }
-    Image wall;
-    Image destroyedWall;
-    Image playerBase;
-    Image enemyBase;
+    private Image wall;
+    private Image destroyedWall;
+    private Image playerBase;
     public Board()  {
           wall = null;
         try {
@@ -63,21 +62,15 @@ public class Board {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        enemyBase = null;
-        try {
-            enemyBase = new Image(new FileInputStream("C:\\Users\\nikit\\OneDrive\\Рабочий стол\\g\\base2.jpg"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
-    double getX(int index){ return (index % board_size)*sel_size; }
-    double getY(int index){ return (index / board_size)*sel_size; }
+    public  double getX(int index){ return (index % board_size)*sel_size; }
+    public  double getY(int index){ return (index / board_size)*sel_size; }
 
-    void refresh(){
+    public void refresh(){
         board = original_board.clone();
     }
-     void update(){
+    public void update(){
         images.clear();
          for(int i=0;i<board.length;i++){
              if(board[i]==2){
@@ -120,23 +113,25 @@ public class Board {
             //print();
             return;
         }
-        if(board[index]==3 || board[index]==4) {
+        if(board[index]==3) {
             board[index] = 0;
             return;
         }
     }
 
-    public int[] getBoard() {
-        return board;
+    public boolean itsLose(){
+        int counter=0;
+        for(int i=0;i<board.length;i++){
+            if(board[i]==3) counter++;
+        }
+        if(counter!=2)return true;
+        else return false;
     }
+    public int[] getBoard() { return board; }
 
-    public int getBoard_size() {
-        return board_size;
-    }
+    public int getBoard_size() { return board_size; }
 
-    public int getSel_size() {
-        return sel_size;
-    }
+    public int getSel_size() { return sel_size; }
 
     public Pair<Double,Double> getBase(){
         Pair<Double,Double> answer;
