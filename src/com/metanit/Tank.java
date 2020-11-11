@@ -25,12 +25,11 @@ public class Tank {
         this.y=Y;
         Image  image = null;
         try {
-            image = new Image(new FileInputStream("C:\\Users\\nikit\\OneDrive\\Рабочий стол\\g\\tank.jpg"));
+            image = new Image(new FileInputStream("C:\\Users\\nikit\\OneDrive\\Рабочий стол\\g\\tank3.jpg"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         img = new ImageView(image);
-
         img.setX(X);
         img.setY(Y);
 
@@ -74,6 +73,9 @@ public class Tank {
     public void shoot(Bullets bullets){
         bullets.addBullet(x, y, angle);
     }
+
+    public void setImg(ImageView img) { this.img = img; }
+
     public ImageView getImg() { return img; }
 
     public double getX() { return x; }

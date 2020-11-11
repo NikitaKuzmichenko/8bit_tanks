@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class Board {
 
-   private final int sel_size =35,board_size=20;
+    private final int sel_size =35,board_size=20;
     //0-отсутсвие препядствия , 1 - покалеченное припядствие, 2 - целое препядствие
     //3 - союзная база
     //карта 20х20, каждый элемент - верхний левый угол ячейки в (sel_size)х(sel_size)
@@ -37,7 +37,7 @@ public class Board {
     };
     private int [] board = original_board.clone();
 
-    HashMap<Integer, ImageView> images = new HashMap();
+    private HashMap<Integer, ImageView> images = new HashMap();
 
     public HashMap<Integer, ImageView> getImages() { return images; }
     private Image wall;

@@ -13,15 +13,17 @@ public class Bullets {
     private final double tank_size = 35;
     private final double speed = 3;
     private ImageView img;
+    private String path ="C:\\Users\\nikit\\OneDrive\\Рабочий стол\\g\\bullet2.png";
 
     private ArrayList<ImageView> bullets = new ArrayList<ImageView>();
 
     public Bullets() {}
+    public Bullets(String path) { this.path=path; }
 
     public void addBullet(double x, double y, double angle) {
         Image image = null;
         try {
-            image = new Image(new FileInputStream("C:\\Users\\nikit\\OneDrive\\Рабочий стол\\g\\bullet2.jpg"));
+            image = new Image(new FileInputStream(path));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 package com.metanit;
 
 import javafx.scene.Group;
+import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
 
@@ -19,8 +20,14 @@ public class Enemies {
         enemies.add(enemy);
     }
 
-    public void deleteEnemy(Tank enemy){
-        deleted.add(enemy);
+    public void deleteEnemy(Tank enemy){ deleted.add(enemy); }
+
+    public void setHP(int HP){
+        enemies.forEach(e-> e.setHP(HP));
+    }
+
+    public void setImage(ImageView img){
+        enemies.forEach(e->e.setImg(img));
     }
 
     public ArrayList<Tank> update(){
